@@ -10,11 +10,11 @@ public class MatrixInitializer {
         this.random = new Random(seed);
     }
 
-    public int[][] initializeRandomMatrix(int rows, int columns) {
-        int[][] matrix = new int[rows][columns];
+    public float[][] initializeRandomMatrix(int rows, int columns) {
+        float[][] matrix = new float[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                matrix[i][j] = random.nextInt();
+                matrix[i][j] = random.nextFloat();
             }
         }
         return matrix;

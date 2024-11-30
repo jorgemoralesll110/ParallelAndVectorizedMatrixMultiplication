@@ -1,16 +1,17 @@
 package org.ulpgc.bigdata.task3;
 
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
+import jdk.incubator.vector.FloatVector;
+import jdk.incubator.vector.VectorSpecies;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class MatrixMultiplier {
+    private static final VectorSpecies<Float> SPECIES = FloatVector.SPECIES_PREFERRED;
 
     //Sequential matrix multiplication
-    public void sequentialMultiplication(int[][] A, int[][] B, int[][] C) {
+    public void sequentialMultiplication(float[][] A, float[][] B, float[][] C) {
         int rows = A.length;
         int columns = B[0].length;
         int common = A[0].length;
@@ -25,7 +26,7 @@ public class MatrixMultiplier {
     }
 
     //Parallel matrix multiplication
-    public void parallelMultiplication(int[][] A, int[][] B, int[][] C) {
+    public void parallelMultiplication(float[][] A, float[][] B, float[][] C) {
         int rows = A.length;
         int columns = B[0].length;
         int common = A[0].length;
@@ -56,25 +57,33 @@ public class MatrixMultiplier {
     }
 
     //Vectorized multiplication
-    public INDArray vectorMultiplication(INDArray A, INDArray B) {
-        return A.mmul(B);
-    }
+    public static void vectorizedSIMDMultiplication(float[][] A, float[][] B, float[][] C) {
+        int rows = A.length;
+        int cols = B[0].length;
+        int commonDim = A[0].length;
 
-    //Method to convert a 2D array to an INDArray
-    public INDArray toINDArray(int[][] matrix) {
-        return Nd4j.create(matrix);
-    }
-
-    //Method to convert an INDArray to a 2D array
-    public int[][] toArray(INDArray matrix) {
-        int rows = matrix.rows();
-        int columns = matrix.columns();
-        int[][] result = new int[rows][columns];
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                result[i][j] = matrix.getInt(i, j);
+            for (int j = 0; j < cols; j++) {
+                FloatVector result = FloatVector.zero(SPECIES);
+                float sum = 0;
+                int k = 0;
+                for (; k + SPECIES.length() <= commonDim; k += SPECIES.length()) {
+                    FloatVector a = FloatVector.fromArray(SPECIES, A[i], k);
+                    FloatVector b = FloatVector.fromArray(SPECIES, B[j], k);
+                    result = result.add(a.mul(b));
+
+                    for (int l = 0; l < SPECIES.length(); l++) {
+                        sum += result.lane(l);
+                    }
+                }
+
+                for (; k < commonDim; k++) {
+                    sum += A[i][k] * B[k][j];
+                }
+
+                C[i][j] = sum;
             }
         }
-        return result;
     }
+
 }

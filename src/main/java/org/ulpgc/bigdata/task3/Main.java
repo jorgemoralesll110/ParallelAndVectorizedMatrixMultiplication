@@ -1,99 +1,87 @@
 package org.ulpgc.bigdata.task3;
 
-
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 
 public class Main {
 
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
-
     public static void main(String[] args) {
-        int n = 2000;
+        int n = 3000    ;
         long seed = 42;
 
-        logger.info("Initializing matrices of size {}x{}\n", n, n);
+        System.out.println("=".repeat(60));
+        System.out.printf("%-20s %s %d x %d\n", "Matrix Multiplication", "Size:", n, n);
+        System.out.println("=".repeat(60));
 
         // Initialize matrices
         MatrixInitializer matrixInitializer = new MatrixInitializer(seed);
-        int[][] A = matrixInitializer.initializeRandomMatrix(n, n);
-        int[][] B = matrixInitializer.initializeRandomMatrix(n, n);
-        int[][] C_sequential = new int[n][n];
-        int[][] C_parallel = new int[n][n];
+        float[][] A = matrixInitializer.initializeRandomMatrix(n, n);
+        float[][] B = matrixInitializer.initializeRandomMatrix(n, n);
+        float[][] C_Sequential = new float[n][n];
+        float[][] C_Parallel = new float[n][n];
+        float[][] C_Vectorized = new float[n][n];
 
         MatrixMultiplier matrixMultiplier = new MatrixMultiplier();
 
         // Sequential multiplication
-        logResourceUsage("Before sequential multiplication");
+        System.out.printf("%-30s", "Starting Sequential Multiplication...");
         long start = System.currentTimeMillis();
-        logger.debug("Starting sequential multiplication...");
-        matrixMultiplier.sequentialMultiplication(A, B, C_sequential);
+        matrixMultiplier.sequentialMultiplication(A, B, C_Sequential);
         long end = System.currentTimeMillis();
-        long sequentialTime = end - start;
-        logger.info("Sequential multiplication took {} ms", sequentialTime);
-        logResourceUsage("After sequential multiplication");
+        long sequentialTime = (end - start) / 1000;
+        System.out.printf("Done in: %5d seconds\n", sequentialTime);
 
         // Parallel multiplication
-        logResourceUsage("Before parallel multiplication");
+        System.out.printf("%-30s", "Starting Parallel Multiplication...");
         start = System.currentTimeMillis();
-        logger.debug("Starting parallel multiplication...");
-        matrixMultiplier.parallelMultiplication(A, B, C_parallel);
+        matrixMultiplier.parallelMultiplication(A, B, C_Parallel);
         end = System.currentTimeMillis();
-        long parallelTime = end - start;
-        logger.info("Parallel multiplication took {} ms", parallelTime);
-        logResourceUsage("After parallel multiplication");
+        long parallelTime = (end - start) / 1000;
+        System.out.printf("Done in: %5d seconds\n", parallelTime);
 
         // Vectorized multiplication
-        logResourceUsage("Before vector multiplication");
-        INDArray ndA = Nd4j.create(A);
-        INDArray ndB = Nd4j.create(B);
+        System.out.printf("%-30s", "Starting Vectorized Multiplication...");
         start = System.currentTimeMillis();
-        logger.debug("Starting vector multiplication...");
-        INDArray ndC = matrixMultiplier.vectorMultiplication(ndA, ndB);
+        MatrixMultiplier.vectorizedSIMDMultiplication(A, B, C_Vectorized);
         end = System.currentTimeMillis();
-        long vectorTime = end - start;
-        logger.info("Vector multiplication took {} ms", vectorTime);
-        logResourceUsage("After vector multiplication");
-
-        // Compare results
-        int[][] C_vectorized = matrixMultiplier.toArray(ndC);
-
-        // Metrics
-        double speedupParallel = (double) sequentialTime / parallelTime;
-        double speedupVector = (double) sequentialTime / vectorTime;
-        int numCores = Runtime.getRuntime().availableProcessors();
-
-        logger.info("Speedup parallel: {}", speedupParallel);
-        logger.info("Speedup vector: {}", speedupVector);
-        logger.info("Efficiency parallel: {}", speedupParallel / numCores);
-        logger.info("Efficiency vector: {}", speedupVector / numCores);
+        long vectorizedTime = (end - start) / 1000  ;
+        System.out.printf("Done in: %5d seconds\n", vectorizedTime);
 
         // Validate results
+        System.out.println("-".repeat(60));
         MatrixValidator matrixValidator = new MatrixValidator();
-        boolean isValidParallel = matrixValidator.validateResults(C_sequential, C_parallel);
-        boolean isValidVectorized = matrixValidator.validateResults(C_sequential, C_vectorized);
+        boolean parallelEqual = matrixValidator.validateResults(C_Sequential, C_Parallel);
+        boolean vectorizedValidation = matrixValidator.validateResults(C_Sequential, C_Vectorized);
 
-        logger.info("Parallel multiplication is valid?: {}", isValidParallel);
-       logger.info("Vector multiplication is valid?: {}", isValidVectorized);
+        System.out.printf("%-30s: %s\n", "Is Parallel result correct?", parallelEqual ? "Yes" : "No");
+        System.out.printf("%-30s: %s\n", "Is Vectorized result correct?", vectorizedValidation ? "Yes" : "No");
+
+        // Metrics
+        System.out.println("-".repeat(60));
+        double speedupParallel = (double) sequentialTime / parallelTime;
+        double speedupVectorized = (double) sequentialTime / vectorizedTime;
+        System.out.printf("%-30s: %.2fx\n", "Speedup Parallel", speedupParallel);
+        System.out.printf("%-30s: %.2fx\n", "Speedup Vectorized", speedupVectorized);
+
+        // Resource usage
+        logResourceUsage();
+        System.out.println("=".repeat(60));
     }
 
-    // Method to log memory usage
-    private static void logResourceUsage(String stage) {
-        logger.info("-------------{}-------------", stage);
+    private static void logResourceUsage() {
+        System.out.printf("\n%-30s\n", "Final Resource Usage");
+        System.out.println("-".repeat(60));
+
         int numCores = Runtime.getRuntime().availableProcessors();
-        logger.info("Number of cores: {}", numCores);
+        System.out.printf("%-30s: %d\n", "Number of Cores:", numCores);
 
         MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
         MemoryUsage heapMemoryUsage = memoryBean.getHeapMemoryUsage();
-        logger.info("Initial memory usage (Heap): {} MB", heapMemoryUsage.getInit() / 1024 / 1024);
-        logger.info("Maximum memory usage (Heap): {} MB", heapMemoryUsage.getMax() / 1024 / 1024);
-        logger.info("Current Used memory (Heap): {} MB", heapMemoryUsage.getUsed() / 1024 / 1024);
-        logger.info("---------------------------------");
+        System.out.printf("%-30s: %d MB\n", "Initial Heap Memory:", heapMemoryUsage.getInit() / 1024 / 1024);
+        System.out.printf("%-30s: %d MB\n", "Maximum Heap Memory:", heapMemoryUsage.getMax() / 1024 / 1024);
+        System.out.printf("%-30s: %d MB\n", "Current Heap Memory:", heapMemoryUsage.getUsed() / 1024 / 1024);
+
     }
+
 }

@@ -4,18 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="853d5337-b071-4def-b74e-b2842887008b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/MatrixInitializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/MatrixMultiplier.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/MatrixValidator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" afterDir="false" />
+    <list default="true" id="853d5337-b071-4def-b74e-b2842887008b" name="Changes" comment="First Version of the task">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/MatrixInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/MatrixInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/MatrixMultiplier.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/MatrixMultiplier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/MatrixValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ulpgc/bigdata/task3/MatrixValidator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +26,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "jorgemoralesll110"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/jorgemoralesll110/ParallelAndVectorizedMatrixMultiplication",
+    "accountId": "eb8db4a5-6519-4e74-b4b4-85f7704d86b6"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -50,15 +56,17 @@
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/tomas/Desktop/BIG DATA/kata-inds",
     "onboarding.tips.debug.path": "C:/Users/tomas/Desktop/BIG DATA/ParallelAndVectorizedMatrixMultiplication/src/main/java/org/example/Main.java",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "SDKs",
     "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler"
   }
 }]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.ulpgc.bigdata.task3.Main" />
       <module name="ParallelAndVectorizedMatrixMultiplication" />
+      <option name="VM_PARAMETERS" value="--add-modules jdk.incubator.vector" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="org.ulpgc.bigdata.task3.*" />
@@ -84,6 +92,19 @@
       <option name="presentableId" value="Default" />
       <updated>1732793671338</updated>
     </task>
+    <task id="LOCAL-00001" summary="First Version of the task">
+      <option name="closed" value="true" />
+      <created>1732878607827</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1732878607827</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First Version of the task" />
+    <option name="LAST_COMMIT_MESSAGE" value="First Version of the task" />
   </component>
 </project>
